@@ -79,7 +79,7 @@ export function Hero() {
 
         <h1 className={`t-names mt-6 sm:mt-8 ${photo ? "font-medium [text-shadow:0_2px_20px_rgba(72,20,31,0.14)]" : ""}`}>
           <span className="hero-in block text-balance" style={delay(600)}>
-            {wedding.groom.name}
+            {wedding.bride.name}
           </span>
           <span className="hero-in my-1 flex items-center justify-center gap-4 sm:my-2" style={delay(760)}>
             <svg aria-hidden viewBox="0 0 80 2" className="h-px w-10 sm:w-16">
@@ -93,15 +93,11 @@ export function Hero() {
             </svg>
           </span>
           <span className="hero-in block text-balance" style={delay(880)}>
-            {wedding.bride.name}
+            {wedding.groom.name}
           </span>
         </h1>
 
-        <p className={`hero-in t-lead mt-5 max-w-[46ch] sm:mt-6 ${layered ? "portrait:hidden" : ""} ${photo ? "text-ink" : "text-ivory/85"}`} style={delay(1040)}>
-          <span className="block lg:whitespace-nowrap">Two hearts, one destiny, and a lifetime of togetherness.</span>
-          <span className="mt-1 block text-[0.92em] opacity-85 lg:whitespace-nowrap">Together with our families, we joyfully invite you to celebrate our wedding.</span>
-        </p>
-        <p className={`hero-in t-label mt-4 ${layered ? "portrait:mt-3 [@media(orientation:portrait)_and_(max-height:760px)]:hidden" : ""} ${photo ? "text-maroon" : "text-gold"}`} style={delay(1160)}>
+        <p className={`hero-in t-label mt-8 sm:mt-10 ${layered ? "portrait:mt-6 [@media(orientation:portrait)_and_(max-height:760px)]:hidden" : ""} ${photo ? "text-maroon" : "text-gold"}`} style={delay(1160)}>
           {weddingDateLabel}
         </p>
 

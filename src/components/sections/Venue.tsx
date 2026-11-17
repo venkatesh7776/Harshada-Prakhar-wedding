@@ -1,62 +1,52 @@
-import Image from "next/image";
-import { asset, generated } from "@/lib/assets";
 import { venueCeremony } from "@/lib/wedding-data";
-import { ArchEdge, KolamTexture, LotusDivider } from "../art/Ornaments";
+import { LotusDivider } from "../art/Ornaments";
 import { Reveal } from "../motion/Reveal";
 
-/** The Muhurtham venue, with a Google Maps directions link. */
+/** "Looking forward to see you" — an embedded map beside the venue card. */
 export function Venue() {
   if (!venueCeremony) return null;
   const { venue } = venueCeremony;
-  const photo = asset(venue.photo);
-  // The painted courtyard is illustrative only — never presented as the actual venue.
-  const illustration = photo ? undefined : generated("venue-placeholder");
+  const embed = `https://maps.google.com/maps?q=${encodeURIComponent(`${venue.name}, ${venue.address}`)}&z=15&output=embed`;
 
   return (
-    <section id="venue" className="section section--dark z-20 overflow-x-clip">
-      <ArchEdge color="var(--burgundy)" flip />
-      <KolamTexture className="opacity-[0.05]" id="kolam-venue" />
-      <div className="container-wide relative grid items-center gap-12 md:grid-cols-[1.1fr_1fr] md:gap-16">
-        <Reveal variant="image" className="relative aspect-[3/2] w-full overflow-hidden rounded-sm bg-[#3a0f18] ring-1 ring-gold/30">
-          {photo || illustration ? (
-            <Image
-              src={(photo ?? illustration)!}
-              alt={photo ? `Illustration of a wedding reception hall` : "Illustration of a heritage wedding courtyard"}
-              fill
-              sizes="(min-width: 768px) 36rem, 92vw"
-              className="object-cover"
-            />
-          ) : (
-            <div className="flex h-full w-full flex-col items-center justify-center gap-4 p-6 text-center">
-              <LotusDivider />
-              <p className="t-label text-[10px] text-gold-muted">Venue photograph to follow</p>
-            </div>
-          )}
+    <section id="venue" className="section">
+      <div className="container-wide max-w-5xl">
+        <Reveal className="text-center">
+          <p className="t-label text-gold">Location</p>
+          <h2 className="t-h2 mt-4 text-balance">Looking forward to see you</h2>
+          <LotusDivider className="mt-6" />
         </Reveal>
 
-        <div className="text-center md:text-left">
-          <Reveal>
-            <p className="t-label text-gold">The venue · {venueCeremony.name}</p>
-            <h2 className="t-h2 mt-4">{venue.name}</h2>
+        <div className="mt-14 grid gap-6 md:grid-cols-[1.2fr_1fr] md:gap-8">
+          <Reveal variant="image" className="relative aspect-[4/3] w-full overflow-hidden rounded-sm bg-ivory-deep ring-1 ring-gold/40 md:aspect-auto md:min-h-[22rem]">
+            <iframe
+              src={embed}
+              title={`Map showing ${venue.name}`}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="absolute inset-0 h-full w-full border-0"
+            />
           </Reveal>
-          <Reveal delay={100}>
-            <address className="mt-6 not-italic leading-relaxed text-ivory/80">{venue.address}</address>
-            <p className="mt-4 text-sm text-gold-muted">
-              {venueCeremony.dateLabel} · {venueCeremony.timeLabel}
-              {venueCeremony.altTimeLabel && <span className="mt-1 block text-ivory/60">{venueCeremony.altTimeLabel}</span>}
-            </p>
-          </Reveal>
-          <Reveal delay={200} className="mt-8">
-            <a href={venue.mapUrl} target="_blank" rel="noopener noreferrer" className="btn btn--gold group">
-              Get Directions
-              <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth={1.4}>
-                <path d="M3 8h10M9 4l4 4-4 4" />
+
+          <Reveal delay={120}>
+            <div className="relative flex h-full flex-col items-center justify-center rounded-sm bg-burgundy px-6 py-12 text-center text-ivory shadow-[0_24px_50px_-30px_rgba(72,20,31,0.7)] md:items-start md:px-10 md:text-left">
+              <span aria-hidden className="pointer-events-none absolute inset-2 rounded-[1px] border border-gold/30" />
+              <svg aria-hidden viewBox="0 0 24 24" className="h-8 w-8 text-gold" fill="none" stroke="currentColor" strokeWidth={1.2}>
+                <path d="M12 21.5s-6.5-6-6.5-11.2a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11.2-6.5 11.2Z" />
+                <circle cx="12" cy="10.3" r="2.3" />
               </svg>
-            </a>
+              <h3 className="mt-5 font-display text-[clamp(1.9rem,1.5rem+1.4vw,2.6rem)] leading-tight text-ivory">{venue.name}</h3>
+              <address className="mt-3 max-w-[30ch] not-italic leading-relaxed text-ivory/80">{venue.address}</address>
+              <a href={venue.mapUrl} target="_blank" rel="noopener noreferrer" className="btn btn--gold group relative mt-8">
+                Get Directions
+                <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth={1.4}>
+                  <path d="M3 8h10M9 4l4 4-4 4" />
+                </svg>
+              </a>
+            </div>
           </Reveal>
         </div>
       </div>
-      <ArchEdge color="var(--burgundy)" />
     </section>
   );
 }

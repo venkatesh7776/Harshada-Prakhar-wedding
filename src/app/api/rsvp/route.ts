@@ -1,6 +1,6 @@
 import { wedding } from "@/config/wedding";
 import { validateRsvp } from "@/lib/rsvp";
-import { rsvpCeremony } from "@/lib/wedding-data";
+import { rsvpEvents } from "@/lib/wedding-data";
 
 /**
  * Persists an RSVP by forwarding it to RSVP_WEBHOOK_URL (see README → "RSVP storage").
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   // Honeypot: real guests never see or fill this field.
   if (typeof body.website === "string" && body.website) return Response.json({ ok: true });
 
-  const result = validateRsvp(body, wedding.rsvp);
+  const result = validateRsvp(body, { maxGuests: wedding.rsvp.maxGuests, eventIds: rsvpEvents.map((e) => e.id) });
   if (!result.ok) return Response.json({ error: "invalid", errors: result.errors }, { status: 422 });
 
   try {
@@ -32,7 +32,11 @@ export async function POST(request: Request) {
         "content-type": "application/json",
         ...(process.env.RSVP_WEBHOOK_SECRET && { authorization: `Bearer ${process.env.RSVP_WEBHOOK_SECRET}` }),
       },
-      body: JSON.stringify({ ...result.data, event: rsvpCeremony?.name ?? "", secret: process.env.RSVP_WEBHOOK_SECRET, submittedAt: new Date().toISOString() }),
+      body: JSON.stringify({
+        ...result.data,
+        // Readable event names for the sheet, e.g. "Haldi (19 Jan, 10 am), Wedding (20 Jan, 11 am)"
+        events: rsvpEvents.filter((e) => result.data.events.includes(e.id)).map((e) => e.label).join(", "),
+        secret: process.env.RSVP_WEBHOOK_SECRET, submittedAt: new Date().toISOString() }),
       signal: AbortSignal.timeout(10_000),
       redirect: "follow",
     });

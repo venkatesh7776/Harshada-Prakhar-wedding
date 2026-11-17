@@ -23,7 +23,7 @@ export function MemoriesHeader({ eyebrow, title, back }: { eyebrow: string; titl
           <p className="t-label text-gold">{eyebrow}</p>
           <h1 className="t-h2 mt-4 text-balance">{title}</h1>
           <p className="mt-4 font-display text-lg italic text-ivory/75">
-            {wedding.groom.name} <span className="text-gold">&amp;</span> {wedding.bride.name}
+            {wedding.bride.name} <span className="text-gold">&amp;</span> {wedding.groom.name}
           </p>
           <LotusDivider className="mt-6" />
         </div>

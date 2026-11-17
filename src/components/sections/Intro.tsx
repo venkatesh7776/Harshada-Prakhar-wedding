@@ -44,13 +44,13 @@ export function Intro() {
 
         <p className="t-names mt-5 text-maroon sm:mt-7">
           <span className="hero-in block" style={delay(500)}>
-            {wedding.groom.name}
+            {wedding.bride.name}
           </span>
           <span className="hero-in my-1 block font-display italic leading-none text-[#A9823A] sm:my-2" style={{ ...delay(650), fontSize: "0.62em" }}>
             &amp;
           </span>
           <span className="hero-in block" style={delay(800)}>
-            {wedding.bride.name}
+            {wedding.groom.name}
           </span>
         </p>
 

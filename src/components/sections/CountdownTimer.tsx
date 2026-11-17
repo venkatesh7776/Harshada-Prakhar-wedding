@@ -36,10 +36,10 @@ export function CountdownTimer({ targetIso, endIso }: { targetIso: string; endIs
   }, [targetIso, endIso]);
 
   if (state?.phase === "during") {
-    return <p className="t-lead text-2xl text-gold-muted">Today is the day! Let the celebrations begin.</p>;
+    return <p className="t-lead text-2xl text-maroon">Today is the day! Let the celebrations begin.</p>;
   }
   if (state?.phase === "after") {
-    return <p className="t-lead text-2xl text-gold-muted">Thank you for celebrating with us.</p>;
+    return <p className="t-lead text-2xl text-maroon">Thank you for celebrating with us.</p>;
   }
 
   return (
@@ -48,12 +48,12 @@ export function CountdownTimer({ targetIso, endIso }: { targetIso: string; endIs
         const value = state ? String(state.parts[key]).padStart(2, "0") : "––";
         return (
           <div key={key} className="flex flex-col items-center px-2 sm:px-8">
-            <span className="h-[1.1em] overflow-hidden font-display text-[clamp(2.5rem,1.6rem+4.5vw,5rem)] font-light leading-none text-ivory [font-variant-numeric:lining-nums_tabular-nums]">
+            <span className="h-[1.1em] overflow-hidden font-display text-[clamp(2.5rem,1.6rem+4.5vw,5rem)] font-medium leading-none text-[#A9823A] [font-variant-numeric:lining-nums_tabular-nums]">
               <span key={value} className={state ? "digit-in" : ""}>
                 {value}
               </span>
             </span>
-            <span className="t-label mt-3 text-[10px] text-gold-muted sm:text-xs">{label}</span>
+            <span className="t-label mt-3 text-[10px] text-ink-muted sm:text-xs">{label}</span>
           </div>
         );
       })}

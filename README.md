@@ -49,14 +49,14 @@ Easiest setup — a Google Sheet:
 
      const ss = SpreadsheetApp.getActiveSpreadsheet();
      const sheet = ss.getSheetByName("RSVPs") || ss.insertSheet("RSVPs");
-     if (sheet.getLastRow() === 0) sheet.appendRow(["Submitted at", "Name", "Attending", "Guests", "Wishes", "Request id"]);
+     if (sheet.getLastRow() === 0) sheet.appendRow(["Submitted at", "Name", "No. of people", "Contact number", "Events attending", "Request id"]);
 
      // Ignore retries of the same submission
      const ids = sheet.getLastRow() > 1 ? sheet.getRange(2, 6, sheet.getLastRow() - 1, 1).getValues().flat() : [];
      if (ids.includes(data.id)) return out({ ok: true, duplicate: true });
 
      const safe = (v) => (/^[=+\-@]/.test(String(v)) ? "'" + v : v); // block formula injection
-     sheet.appendRow([data.submittedAt, safe(data.name), data.attending === "yes" ? "Joyfully accepts" : "Regretfully declines", data.guests, safe(data.message), data.id]);
+     sheet.appendRow([data.submittedAt, safe(data.name), data.guests, safe(data.phone), data.events, data.id]);
      return out({ ok: true });
    }
    ```

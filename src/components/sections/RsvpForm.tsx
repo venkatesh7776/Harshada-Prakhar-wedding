@@ -4,7 +4,8 @@ import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { LIMITS, validateRsvp, type RsvpErrors } from "@/lib/rsvp";
 
 type Status = "idle" | "submitting" | "success" | "error";
-type Saved = { name: string; attending: "yes" | "no" };
+type Saved = { name: string };
+type EventOption = { id: string; label: string };
 
 const STORAGE_KEY = "rsvp-submitted";
 
@@ -15,12 +16,11 @@ const messages: Record<string, string> = {
   network: "We couldn't reach the server. Please check your connection and try again.",
 };
 
-export function RsvpForm({ collectGuestCount, maxGuests }: { collectGuestCount: boolean; maxGuests: number }) {
+export function RsvpForm({ maxGuests, events }: { maxGuests: number; events: EventOption[] }) {
   const uid = useId();
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<RsvpErrors>({});
   const [serverError, setServerError] = useState("");
-  const [attending, setAttending] = useState<"yes" | "no" | "">("");
   const [saved, setSaved] = useState<Saved | null>(null);
   const requestId = useRef<string>("");
   const statusRef = useRef<HTMLDivElement>(null);
@@ -37,8 +37,13 @@ export function RsvpForm({ collectGuestCount, maxGuests }: { collectGuestCount: 
     e.preventDefault();
     if (status === "submitting") return;
     const form = new FormData(e.currentTarget);
-    const input = Object.fromEntries(form) as Record<string, string>;
-    const check = validateRsvp(input, { collectGuestCount, maxGuests });
+    const input = {
+      name: String(form.get("name") ?? ""),
+      guests: String(form.get("guests") ?? ""),
+      phone: String(form.get("phone") ?? ""),
+      events: form.getAll("events").map(String),
+    };
+    const check = validateRsvp(input, { maxGuests, eventIds: events.map((ev) => ev.id) });
     if (!check.ok) {
       setErrors(check.errors);
       const first = Object.keys(check.errors)[0];
@@ -55,7 +60,7 @@ export function RsvpForm({ collectGuestCount, maxGuests }: { collectGuestCount: 
       const res = await fetch("/api/rsvp", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...check.data, id: requestId.current, website: input.website ?? "" }),
+        body: JSON.stringify({ ...check.data, id: requestId.current, website: String(form.get("website") ?? "") }),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -64,7 +69,7 @@ export function RsvpForm({ collectGuestCount, maxGuests }: { collectGuestCount: 
         setStatus("error");
         return;
       }
-      const record = { name: check.data.name, attending: check.data.attending };
+      const record = { name: check.data.name };
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(record));
       } catch {}
@@ -83,29 +88,30 @@ export function RsvpForm({ collectGuestCount, maxGuests }: { collectGuestCount: 
 
   if (status === "success" && saved) {
     return (
-      <div ref={statusRef} tabIndex={-1} role="status" className="fade-in py-10 text-center outline-none">
+      <div ref={statusRef} tabIndex={-1} role="status" className="fade-in py-8 text-center outline-none">
         <svg aria-hidden viewBox="0 0 48 48" className="mx-auto h-14 w-14 text-gold" fill="none" stroke="currentColor" strokeWidth={1.4}>
           <circle cx="24" cy="24" r="22" pathLength={1} className="draw-line" />
           <path d="M15 24.5l6 6 12-13" pathLength={1} className="draw-line" style={{ "--d": "400ms" } as React.CSSProperties} />
         </svg>
         <h3 className="t-h3 mt-6">Thank you, {saved.name}</h3>
-        <p className="mt-3 text-ink-muted">
-          {saved.attending === "yes" ? "Your RSVP for the reception has been received. We can't wait to celebrate with you." : "You'll be missed — thank you for letting us know."}
-        </p>
+        <p className="mt-3 text-ink-muted">Your RSVP has been received. We can&apos;t wait to celebrate with you.</p>
       </div>
     );
   }
 
-  const field = "mt-2 w-full rounded-sm border border-maroon/25 bg-ivory px-4 py-3 text-ink outline-none transition-colors duration-300 placeholder:text-ink-muted/60 focus:border-maroon focus-visible:outline-2 focus-visible:outline-gold aria-[invalid=true]:border-maroon";
+  const field =
+    "mt-2 w-full rounded-sm border border-maroon/25 bg-ivory px-4 py-3 text-ink outline-none transition-colors duration-300 placeholder:text-ink-muted/60 focus:border-maroon focus-visible:outline-2 focus-visible:outline-gold aria-[invalid=true]:border-maroon";
+  const label = "t-label text-[11px] text-maroon";
   const err = (k: keyof RsvpErrors) =>
     errors[k] && (
       <p id={`${uid}-${k}-err`} className="mt-2 text-sm text-maroon">
         {errors[k]}
       </p>
     );
+  const describedBy = (k: keyof RsvpErrors) => (errors[k] ? `${uid}-${k}-err` : undefined);
 
   return (
-    <form noValidate onSubmit={onSubmit} className="space-y-7 text-left" aria-busy={status === "submitting"}>
+    <form noValidate onSubmit={onSubmit} className="relative space-y-6 text-left" aria-busy={status === "submitting"}>
       {saved && (
         <p className="rounded-sm border border-gold/40 bg-ivory/70 px-4 py-3 text-sm text-ink-muted">
           You&apos;ve already replied as <strong className="font-medium text-ink">{saved.name}</strong>. Submit again only to update your response.
@@ -113,8 +119,8 @@ export function RsvpForm({ collectGuestCount, maxGuests }: { collectGuestCount: 
       )}
 
       <div>
-        <label htmlFor={`${uid}-name`} className="t-label text-[11px] text-maroon">
-          Guest name
+        <label htmlFor={`${uid}-name`} className={label}>
+          Name
         </label>
         <input
           id={`${uid}-name`}
@@ -123,54 +129,19 @@ export function RsvpForm({ collectGuestCount, maxGuests }: { collectGuestCount: 
           maxLength={LIMITS.name}
           required
           aria-invalid={!!errors.name}
-          aria-describedby={errors.name ? `${uid}-name-err` : undefined}
+          aria-describedby={describedBy("name")}
           className={field}
           placeholder="Full name"
         />
         {err("name")}
       </div>
 
-      <fieldset aria-describedby={errors.attending ? `${uid}-attending-err` : undefined}>
-        <legend className="t-label text-[11px] text-maroon">Will you be attending?</legend>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2">
-          {(
-            [
-              ["yes", "Joyfully Accept"],
-              ["no", "Regretfully Decline"],
-            ] as const
-          ).map(([value, label]) => (
-            <label
-              key={value}
-              className="flex min-h-12 cursor-pointer items-center gap-3 rounded-sm border border-maroon/25 bg-ivory px-4 py-3 transition-colors duration-300 has-[:checked]:border-maroon has-[:checked]:bg-maroon has-[:checked]:text-ivory has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-gold"
-            >
-              <input
-                type="radio"
-                name="attending"
-                value={value}
-                checked={attending === value}
-                onChange={() => setAttending(value)}
-                className="h-4 w-4 accent-gold"
-              />
-              <span className="font-display text-lg">{label}</span>
-            </label>
-          ))}
-        </div>
-        {err("attending")}
-      </fieldset>
-
-      {collectGuestCount && attending === "yes" && (
-        <div className="fade-in">
-          <label htmlFor={`${uid}-guests`} className="t-label text-[11px] text-maroon">
-            Number of guests (including you)
+      <div className="grid gap-6 sm:grid-cols-2">
+        <div>
+          <label htmlFor={`${uid}-guests`} className={label}>
+            Number of people
           </label>
-          <select
-            id={`${uid}-guests`}
-            name="guests"
-            defaultValue="1"
-            aria-invalid={!!errors.guests}
-            aria-describedby={errors.guests ? `${uid}-guests-err` : undefined}
-            className={field}
-          >
+          <select id={`${uid}-guests`} name="guests" defaultValue="1" aria-invalid={!!errors.guests} aria-describedby={describedBy("guests")} className={field}>
             {Array.from({ length: maxGuests }, (_, i) => (
               <option key={i + 1} value={i + 1}>
                 {i + 1}
@@ -179,24 +150,42 @@ export function RsvpForm({ collectGuestCount, maxGuests }: { collectGuestCount: 
           </select>
           {err("guests")}
         </div>
-      )}
 
-      <div>
-        <label htmlFor={`${uid}-message`} className="t-label text-[11px] text-maroon">
-          Message to the couple <span className="normal-case tracking-normal text-ink-muted">(optional)</span>
-        </label>
-        <textarea
-          id={`${uid}-message`}
-          name="message"
-          rows={4}
-          maxLength={LIMITS.message}
-          aria-invalid={!!errors.message}
-          aria-describedby={errors.message ? `${uid}-message-err` : undefined}
-          className={`${field} resize-y`}
-          placeholder="A blessing, a memory, a few kind words…"
-        />
-        {err("message")}
+        <div>
+          <label htmlFor={`${uid}-phone`} className={label}>
+            Contact number <span className="normal-case tracking-normal text-ink-muted">(optional)</span>
+          </label>
+          <input
+            id={`${uid}-phone`}
+            name="phone"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            maxLength={LIMITS.phone}
+            aria-invalid={!!errors.phone}
+            aria-describedby={describedBy("phone")}
+            className={field}
+            placeholder="+91 98765 43210"
+          />
+          {err("phone")}
+        </div>
       </div>
+
+      <fieldset aria-describedby={describedBy("events")}>
+        <legend className={label}>Events attending</legend>
+        <div className="mt-3 grid gap-3">
+          {events.map((ev) => (
+            <label
+              key={ev.id}
+              className="flex min-h-12 cursor-pointer items-center gap-3 rounded-sm border border-maroon/25 bg-ivory px-4 py-3 transition-colors duration-300 has-[:checked]:border-maroon has-[:checked]:bg-maroon has-[:checked]:text-ivory has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-gold"
+            >
+              <input type="checkbox" name="events" value={ev.id} className="h-4 w-4 accent-gold" />
+              <span className="font-display text-lg [font-variant-numeric:lining-nums]">{ev.label}</span>
+            </label>
+          ))}
+        </div>
+        {err("events")}
+      </fieldset>
 
       {/* Honeypot for bots */}
       <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
@@ -212,7 +201,7 @@ export function RsvpForm({ collectGuestCount, maxGuests }: { collectGuestCount: 
         </div>
       )}
 
-      <button type="submit" disabled={status === "submitting"} className="btn btn--maroon w-full disabled:cursor-wait disabled:opacity-80 sm:w-auto sm:min-w-56">
+      <button type="submit" disabled={status === "submitting"} className="btn btn--maroon w-full disabled:cursor-wait disabled:opacity-80">
         {status === "submitting" ? (
           <>
             <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 animate-spin" fill="none" stroke="currentColor" strokeWidth={2}>

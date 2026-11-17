@@ -1,9 +1,7 @@
 /**
  * Single source of truth for every wedding detail shown on the site.
  *
- * Wedding of Murali N. & Varshitha D. S. — 16–19 November 2026, Mulbagal.
- * Couple portraits and gallery photos are not set yet: add real photographs under
- * public/images and reference them here (sections fall back gracefully until then).
+ * Wedding of Harshada Lonkar & Prakhar Gupta — 19–20 January 2027, Nagpur.
  *
  * Dates/times are written as local wall-clock time ("YYYY-MM-DDTHH:mm") in
  * `timeZone`; the site converts them correctly for every guest.
@@ -14,6 +12,8 @@ export type Person = {
   name: string;
   /** Full name as written on the printed invitation */
   invitationName?: string;
+  /** First name, used on the invitation card */
+  firstName?: string;
   qualification?: string;
   /** Family home, shown in the couple section */
   address?: string;
@@ -36,7 +36,12 @@ export type Ceremony = {
   description?: string;
   /** Set false to hide the secondary (EST) time for this event */
   showSecondaryTime?: boolean;
-  dressCode?: string;
+  /** Spot within the venue, e.g. "Pool side" */
+  place?: string;
+  /** Theme / dress code, e.g. "Yellow" */
+  theme?: string;
+  /** Offer this event as a choice on the RSVP form */
+  rsvp?: boolean;
   /** Illustration motif used when no photo/generated image exists */
   motif: "haldi" | "mehendi" | "sangeet" | "vivah" | "reception";
   photo?: string;
@@ -80,6 +85,8 @@ export type WeddingConfig = {
   coupleIntro?: string;
   /** Full invitation message (currently used for the link-preview description) */
   invitation?: string;
+  /** The invitation card: the hosting family and their request */
+  invitationCard: { hosts: string; request: string };
   weddingStart: string;
   ceremonies: Ceremony[];
   venues: Venue[];
@@ -91,9 +98,6 @@ export type WeddingConfig = {
   credits: { heading: string; intro?: string; items: Credit[] };
   rsvp: {
     enabled: boolean;
-    /** The ceremony (by id) guests are replying for */
-    ceremonyId: string;
-    collectGuestCount: boolean;
     maxGuests: number;
     deadline?: string;
   };
@@ -112,126 +116,98 @@ export const wedding: WeddingConfig = {
 
   invocation: "Om Shri Ganeshaya Namah",
   timeZone: "Asia/Kolkata",
-  /** US Eastern (EST in November) */
-  secondaryTimeZone: "America/New_York",
-
-  groom: {
-    name: "Murali N.",
-    invitationName: "Ch. Ry Murali. N",
-    qualification: "B.E., M.S.",
-    parents: { relation: "Son of", names: ["Smt. Manjula K.", "Sri Narayanaswamy M."] },
-    address: "Channapura, Mulbagal Taluk, Kolar District, Karnataka",
-    photo: "/images/couple/groom-portrait.webp",
-  },
 
   bride: {
-    name: "Varshitha D. S.",
-    invitationName: "Ch. Sou. Varshitha. D. S",
-    qualification: "B.Sc.",
-    parents: { relation: "Daughter of", names: ["Smt. Bharathi S.", "Sri Santhosh M."] },
-    address: "Doddamadenahalli, Mulbagal Taluk, Kolar District, Karnataka",
-    photo: "/images/couple/bride-portrait.webp",
+    name: "Harshada Lonkar",
+    firstName: "Harshada",
+    parents: { relation: "Daughter of", names: ["Shri. Ashok", "Smt. Vandan Lonkar"] },
   },
 
-  coupleHeading: "Meet the Couple",
-  coupleIntro: "Two souls, one beautiful journey, forever intertwined.",
+  groom: {
+    name: "Prakhar Gupta",
+    firstName: "Prakhar",
+    parents: { relation: "Son of", names: ["Shri Vijay", "Smt. Shweta Gupta"] },
+  },
+
+  coupleHeading: "",
 
   invitation:
-    "With the blessings of our elders, we cordially invite you and your family to join us in celebrating the wedding of Murali and Varshitha. Your gracious presence and blessings will make our special occasion even more memorable.",
+    "Shri Vijay & Smt. Shweta Gupta cordially request the honour of your presence at the wedding celebration of Prakhar and Harshada — 20 January 2027, Dhawan Celebration, Nagpur.",
 
-  /** The Reception (IST) — the main event; drives the hero and closing date. */
-  weddingStart: "2026-11-18T18:30",
+  invitationCard: {
+    hosts: "Shri Vijay & Smt. Shweta Gupta",
+    request: "Cordially request the honour of your presence at the wedding celebration of our beloved son",
+  },
 
-  /** Display order on the page — the Reception is the main event. */
+  /** The Wedding — drives the hero date and the countdown. */
+  weddingStart: "2027-01-20T11:00",
+
+  /** Display order on the timeline. */
   ceremonies: [
+    {
+      id: "haldi",
+      name: "Haldi/Mandap",
+      start: "2027-01-19T10:00",
+      venueId: "dhawan",
+      place: "Pool side",
+      theme: "Yellow",
+      motif: "haldi",
+      rsvp: true,
+    },
+    {
+      id: "sangeet",
+      name: "Sangeet",
+      start: "2027-01-19T19:00",
+      venueId: "dhawan",
+      place: "Open Lawn",
+      theme: "Indo western",
+      motif: "sangeet",
+      rsvp: true,
+    },
+    {
+      id: "wedding",
+      name: "Wedding",
+      start: "2027-01-20T11:00",
+      venueId: "dhawan",
+      place: "Amber Hall",
+      theme: "Traditional",
+      motif: "vivah",
+      rsvp: true,
+    },
     {
       id: "reception",
       name: "Reception",
-      start: "2026-11-18T18:30",
-      venueId: "hall",
-      description:
-        "An evening of elegance, a celebration of love, and memories to cherish forever. We warmly invite you and your family to grace our wedding reception with your presence and blessings.",
+      subtitle: "पारिवारिक स्नेह सम्मेलन",
+      start: "2027-01-20T20:00",
+      venueId: "dhawan",
+      place: "Open Garden",
       motif: "reception",
-    },
-    {
-      id: "muhurtham",
-      name: "Muhurtham",
-      subtitle: "The wedding ceremony",
-      start: "2026-11-19T04:30",
-      end: "2026-11-19T05:30",
-      venueId: "hall",
-      description:
-        "Two hearts united in love, two souls blessed for a lifetime. With the blessings of our elders and the grace of the Almighty, we warmly invite you and your family to witness the sacred union of Murali and Varshitha.",
-      motif: "vivah",
-    },
-    {
-      id: "haldi",
-      name: "Haldi",
-      start: "2026-11-16T14:00",
-      venueId: "home",
-      showSecondaryTime: false,
-      description: "Let's begin the celebrations with colours, laughter, and blessings. Join us for a joyful Haldi celebration.",
-      motif: "haldi",
-    },
-    {
-      id: "mehendi",
-      name: "Mehendi",
-      start: "2026-11-17T11:00",
-      venueId: "home",
-      showSecondaryTime: false,
-      description: "An afternoon filled with beautiful traditions, intricate mehendi, and happy moments. We can't wait to celebrate with you.",
-      motif: "mehendi",
     },
   ],
 
   venues: [
     {
-      id: "home",
-      name: "Murali Home",
-      address: "Doddamadenahalli, Karnataka 563131.",
-      mapUrl: "https://maps.app.goo.gl/394Awx3uaKu5ZQuV7?g_st=ic",
-    },
-    {
-      id: "hall",
-      name: "Sri Phoolchand Jain Convention Hall",
-      address: "Near Sonnavadi Road, NH 75 Bridge, M.N. Road, Mulbagal Bypass, Mulbagal - 563131, Kolar District.",
-      mapUrl: "https://maps.app.goo.gl/CYFUihGDYqt4CLbq5",
-      /** Illustrative artwork of a reception hall (not a photograph of the venue) */
-      photo: "/images/generated/venue-reception.webp",
+      id: "dhawan",
+      name: "Dhawan Celebration",
+      address: "Gorewada Ring Road, Nagpur, Maharashtra 440013",
+      mapUrl: "https://maps.app.goo.gl/sQ3QXfRcL9PPbTn37?g_st=ic",
     },
   ],
 
-  venueCeremonyId: "reception",
-  countdownCeremonyId: "reception",
+  venueCeremonyId: "wedding",
+  countdownCeremonyId: "wedding",
 
-  /** Add photos as { src: "/images/gallery/01.webp", alt: "…", shape: "tall" | "wide" | "square" }. Empty hides the section. */
   gallery: [],
 
-  credits: {
-    heading: "Our Photographer",
-    intro: "Capturing every smile, ritual and moment of our celebration.",
-    items: [
-      {
-        role: "Photography",
-        name: "Unscripted Stories",
-        byline: "by Santhosh Vemula",
-        logo: { src: "/images/credits/unscripted-stories.png", alt: "Unscripted Stories by Santosh Vemula logo", width: 491, height: 136 },
-        link: { label: "@unscriptedstoriesbysv", url: "https://www.instagram.com/unscriptedstoriesbysv" },
-        icon: "camera",
-      },
-    ],
-  },
+  credits: { heading: "", items: [] },
 
   rsvp: {
     enabled: true,
-    ceremonyId: "reception",
-    collectGuestCount: true,
-    maxGuests: 5,
+    maxGuests: 10,
   },
 
   closing: {
-    message:
-      "Two hearts, one beautiful journey, a lifetime of togetherness.\nYour presence and blessings will make our celebration truly unforgettable.",
+    message: "Your presence and blessings will make our celebration truly special.\nWe can't wait to celebrate with you.",
     contacts: [],
   },
 

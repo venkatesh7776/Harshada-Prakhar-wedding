@@ -38,8 +38,8 @@ export function Blessings() {
 
         <Reveal delay={200} className="mt-12">
           <p className="t-names !text-[clamp(2rem,1.4rem+3vw,3.75rem)]">
-            <span className="whitespace-nowrap">{groom.name}</span> <span className="font-display italic text-gold">&amp;</span>{" "}
-            <span className="whitespace-nowrap">{bride.name}</span>
+            <span className="whitespace-nowrap">{bride.name}</span> <span className="font-display italic text-gold">&amp;</span>{" "}
+            <span className="whitespace-nowrap">{groom.name}</span>
           </p>
           <p className="t-label mt-6 text-gold-muted">{weddingDateLabel}</p>
           {closing.families && <p className="mt-6 text-sm text-ivory/70">{closing.families}</p>}

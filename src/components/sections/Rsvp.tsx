@@ -1,39 +1,30 @@
-import { generated } from "@/lib/assets";
 import { wedding } from "@/config/wedding";
-import { rsvpCeremony } from "@/lib/wedding-data";
+import { rsvpEvents } from "@/lib/wedding-data";
+import { LotusDivider } from "../art/Ornaments";
 import { Reveal } from "../motion/Reveal";
+import { RsvpForm } from "./RsvpForm";
 
 export function Rsvp() {
-  if (!wedding.rsvp.enabled) return null;
-  // A background-free reception setup, falling back to the kalash ornament.
-  const art = generated("rsvp-reception");
-  const kalash = generated("ornament-kalash");
+  if (!wedding.rsvp.enabled || !rsvpEvents.length) return null;
 
   return (
     <section id="rsvp" className="section bg-blush">
       <div className="container-wide max-w-2xl">
         <Reveal className="text-center">
-          {art ? (
-            // eslint-disable-next-line @next/next/no-img-element -- decorative illustration
-            <img src={art} alt="" className="mx-auto mb-8 h-auto w-[min(26rem,85vw)] object-contain" loading="lazy" />
-          ) : (
-            kalash && (
-              // eslint-disable-next-line @next/next/no-img-element -- small decorative ornament
-              <img src={kalash} alt="" className="mx-auto mb-6 h-24 w-24 object-contain drop-shadow-[0_6px_10px_rgba(72,20,31,0.15)]" loading="lazy" />
-            )
-          )}
-          <h2 className="t-h2 text-balance">Please Join Us for the Reception</h2>
-          <p className="t-lead mx-auto mt-4 max-w-[44ch] text-ink-muted">
-            We would love to celebrate this special evening with you and your family.
+          <p className="t-label text-gold">Kindly reply</p>
+          <h2 className="t-h2 mt-4">RSVP</h2>
+          <LotusDivider className="mt-6" />
+          <p className="t-lead mx-auto mt-6 max-w-[46ch] text-ink-muted">
+            We&apos;d love to know if you&apos;ll be joining us. Your presence will make our celebrations even more special.
           </p>
-          {rsvpCeremony && (
-            <p className="t-label mt-6 text-[11px] leading-loose text-gold">
-              {rsvpCeremony.dateLabel} · {rsvpCeremony.timeLabel}
-              <span className="block normal-case tracking-normal">
-                <span className="font-display text-lg italic text-maroon">{rsvpCeremony.venue.name}</span>
-              </span>
-            </p>
-          )}
+        </Reveal>
+
+        <Reveal delay={150} className="mt-12">
+          <div className="relative rounded-sm border border-gold/40 bg-ivory px-5 py-8 shadow-[0_24px_50px_-30px_rgba(90,20,30,0.45)] sm:px-10 sm:py-10">
+            <span aria-hidden className="pointer-events-none absolute inset-2 rounded-[1px] border border-gold/20" />
+            <h3 className="t-h3 mb-8 text-center">Please confirm your presence</h3>
+            <RsvpForm maxGuests={wedding.rsvp.maxGuests} events={rsvpEvents} />
+          </div>
         </Reveal>
       </div>
     </section>
