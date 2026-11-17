@@ -93,7 +93,7 @@ export function RsvpForm({ maxGuests, events }: { maxGuests: number; events: Eve
           <circle cx="24" cy="24" r="22" pathLength={1} className="draw-line" />
           <path d="M15 24.5l6 6 12-13" pathLength={1} className="draw-line" style={{ "--d": "400ms" } as React.CSSProperties} />
         </svg>
-        <h3 className="t-h3 mt-6">Thank you, {saved.name}</h3>
+        <h3 className="t-h3 mt-6 !text-maroon">Thank you, {saved.name}</h3>
         <p className="mt-3 text-ink-muted">Your RSVP has been received. We can&apos;t wait to celebrate with you.</p>
       </div>
     );

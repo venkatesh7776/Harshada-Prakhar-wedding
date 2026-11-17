@@ -1,31 +1,34 @@
+import { generated } from "@/lib/assets";
 import { venueCeremony } from "@/lib/wedding-data";
 import { LotusDivider } from "../art/Ornaments";
 import { Reveal } from "../motion/Reveal";
 
-/** "Looking forward to see you" — an embedded map beside the venue card. */
+/** "Looking forward to see you" — the decorated mandap beside the venue card. */
 export function Venue() {
   if (!venueCeremony) return null;
   const { venue } = venueCeremony;
-  const embed = `https://maps.google.com/maps?q=${encodeURIComponent(`${venue.name}, ${venue.address}`)}&z=15&output=embed`;
+  const mandap = generated("venue-mandap");
 
   return (
     <section id="venue" className="section">
       <div className="container-wide max-w-5xl">
         <Reveal className="text-center">
           <p className="t-label text-gold">Location</p>
-          <h2 className="t-h2 mt-4 text-balance">Looking forward to see you</h2>
+          <h2 className="t-h2 mt-4 text-balance">Looking forward to seeing you</h2>
           <LotusDivider className="mt-6" />
         </Reveal>
 
         <div className="mt-14 grid gap-6 md:grid-cols-[1.2fr_1fr] md:gap-8">
-          <Reveal variant="image" className="relative aspect-[4/3] w-full overflow-hidden rounded-sm bg-ivory-deep ring-1 ring-gold/40 md:aspect-auto md:min-h-[22rem]">
-            <iframe
-              src={embed}
-              title={`Map showing ${venue.name}`}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="absolute inset-0 h-full w-full border-0"
-            />
+          <Reveal variant="image" className="relative aspect-[3/2] w-full overflow-hidden rounded-sm bg-ivory-deep p-2 ring-1 ring-gold/40 md:aspect-auto md:min-h-[22rem]">
+            {mandap ? (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element -- generated mandap artwork */}
+                <img src={mandap} alt="A decorated wedding mandap stage with floral garlands and golden seating" loading="lazy" className="h-full w-full rounded-[2px] object-cover" />
+                <span aria-hidden className="pointer-events-none absolute inset-2 rounded-[1px] border border-gold/40" />
+              </>
+            ) : (
+              <span className="absolute inset-0 grid place-items-center text-ink-muted">Venue</span>
+            )}
           </Reveal>
 
           <Reveal delay={120}>

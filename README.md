@@ -47,16 +47,19 @@ Easiest setup — a Google Sheet:
      const out = (o) => ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
      if (data.secret !== SECRET) return out({ error: "unauthorized" });
 
+     // Ignore duplicate retries of the same submission (kept in cache, so no id column is needed)
+     const cache = CacheService.getScriptCache();
+     if (data.id) {
+       if (cache.get(data.id)) return out({ ok: true, duplicate: true });
+       cache.put(data.id, "1", 21600); // remember this submission for 6 hours
+     }
+
      const ss = SpreadsheetApp.getActiveSpreadsheet();
      const sheet = ss.getSheetByName("RSVPs") || ss.insertSheet("RSVPs");
-     if (sheet.getLastRow() === 0) sheet.appendRow(["Submitted at", "Name", "No. of people", "Contact number", "Events attending", "Request id"]);
-
-     // Ignore retries of the same submission
-     const ids = sheet.getLastRow() > 1 ? sheet.getRange(2, 6, sheet.getLastRow() - 1, 1).getValues().flat() : [];
-     if (ids.includes(data.id)) return out({ ok: true, duplicate: true });
+     if (sheet.getLastRow() === 0) sheet.appendRow(["Name", "No. of people", "Contact number", "Events attending"]);
 
      const safe = (v) => (/^[=+\-@]/.test(String(v)) ? "'" + v : v); // block formula injection
-     sheet.appendRow([data.submittedAt, safe(data.name), data.guests, safe(data.phone), data.events, data.id]);
+     sheet.appendRow([safe(data.name), data.guests, safe(data.phone), data.events]);
      return out({ ok: true });
    }
    ```

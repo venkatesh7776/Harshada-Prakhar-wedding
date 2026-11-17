@@ -48,7 +48,7 @@ export function CountdownTimer({ targetIso, endIso }: { targetIso: string; endIs
         const value = state ? String(state.parts[key]).padStart(2, "0") : "––";
         return (
           <div key={key} className="flex flex-col items-center px-2 sm:px-8">
-            <span className="h-[1.1em] overflow-hidden font-display text-[clamp(2.5rem,1.6rem+4.5vw,5rem)] font-medium leading-none text-[#A9823A] [font-variant-numeric:lining-nums_tabular-nums]">
+            <span className="h-[1.1em] overflow-hidden font-display text-[clamp(2.5rem,1.6rem+4.5vw,5rem)] font-medium leading-none text-[#A9823A] [font-variant-numeric:lining-nums_tabular-nums] [text-shadow:0_1px_16px_rgba(250,245,236,0.9)]">
               <span key={value} className={state ? "digit-in" : ""}>
                 {value}
               </span>

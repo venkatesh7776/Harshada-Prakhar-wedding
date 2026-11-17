@@ -1,4 +1,5 @@
 import { wedding } from "@/config/wedding";
+import { generated } from "@/lib/assets";
 import { ceremonies, type CeremonyView } from "@/lib/wedding-data";
 import { ArchEdge, KolamTexture } from "../art/Ornaments";
 import { Reveal } from "../motion/Reveal";
@@ -26,43 +27,54 @@ function Sunburst({ className = "" }: { className?: string }) {
 }
 
 function EventCard({ c, delay }: { c: CeremonyView; delay: number }) {
+  const image = generated(`ceremony-${c.motif}`);
   return (
     <Reveal delay={delay} className="h-full">
-      <article className="relative mx-auto flex h-full max-w-[17rem] flex-col items-center rounded-t-[9rem] rounded-b-[1.25rem] bg-ivory p-2 text-center shadow-[0_26px_50px_-24px_rgba(0,0,0,0.6)]">
-        <div className="relative flex h-full w-full flex-col items-center rounded-t-[8.5rem] rounded-b-[0.9rem] border-[1.5px] border-gold px-5 pb-4 pt-10">
-          <span aria-hidden className="pointer-events-none absolute inset-1.5 rounded-t-[8.2rem] rounded-b-[0.7rem] border border-gold/35" />
-          <Sparkle className="text-gold" />
-          <h3 className="mt-4 text-balance font-display text-[1.85rem] leading-[1.05] text-maroon">{c.name}</h3>
-          {c.subtitle && <p className="t-deva mt-2 text-[0.95rem] leading-snug text-maroon/80">({c.subtitle})</p>}
-          <dl className="mt-4 space-y-0.5 font-display [font-variant-numeric:lining-nums] text-[1.1rem] leading-snug text-ink">
-            <div>
-              <dt className="sr-only">Date</dt>
-              <dd>{c.cardDateLabel}</dd>
+      <article className="relative mx-auto flex h-full max-w-[17rem] flex-col rounded-t-[9rem] rounded-b-[1.25rem] bg-ivory p-2 text-center shadow-[0_26px_50px_-24px_rgba(0,0,0,0.6)]">
+        <div className="relative flex h-full w-full flex-col overflow-hidden rounded-t-[8.5rem] rounded-b-[0.9rem] border-[1.5px] border-gold">
+          {image && (
+            <div className="relative w-full overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element -- generated ceremony artwork */}
+              <img src={image} alt="" loading="lazy" className="block aspect-[4/5] w-full object-cover" />
+              {/* melt the foot of the image into the ivory details below */}
+              <span aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ivory via-ivory/70 to-transparent" />
             </div>
-            {c.place && (
+          )}
+          <div className={`relative flex flex-1 flex-col items-center px-5 pb-4 ${image ? "-mt-6 pt-0" : "pt-10"}`}>
+            <Sparkle className="text-gold" />
+            <h3 className="mt-3 text-balance font-display text-[1.85rem] leading-[1.05] text-maroon">{c.name}</h3>
+            {c.subtitle && <p className="t-deva mt-2 text-[0.95rem] leading-snug text-maroon/80">({c.subtitle})</p>}
+            <dl className="mt-3 space-y-0.5 font-display [font-variant-numeric:lining-nums] text-[1.1rem] leading-snug text-ink">
               <div>
-                <dt className="sr-only">Place</dt>
-                <dd>{c.place}</dd>
+                <dt className="sr-only">Date</dt>
+                <dd>{c.cardDateLabel}</dd>
               </div>
-            )}
-            <div>
-              <dt className="sr-only">Time</dt>
-              <dd>{c.cardTimeLabel}</dd>
-            </div>
-            {c.theme && (
-              <div className="pt-2">
-                <dt className="inline font-semibold text-maroon">Theme · </dt>
-                <dd className="inline font-semibold text-maroon">{c.theme}</dd>
+              {c.place && (
+                <div>
+                  <dt className="sr-only">Place</dt>
+                  <dd>{c.place}</dd>
+                </div>
+              )}
+              <div>
+                <dt className="sr-only">Time</dt>
+                <dd>{c.cardTimeLabel}</dd>
               </div>
-            )}
-          </dl>
-          <div className="mt-auto w-full pt-5">
-            <div className="flex items-end justify-between text-gold">
-              <Sparkle className="mb-6" />
-              <Sunburst className="h-9 w-28" />
-              <Sparkle className="mb-6" />
+              {c.theme && (
+                <div className="pt-2">
+                  <dt className="inline font-semibold text-maroon">Theme · </dt>
+                  <dd className="inline font-semibold text-maroon">{c.theme}</dd>
+                </div>
+              )}
+            </dl>
+            <div className="mt-auto w-full pt-5">
+              <div className="flex items-end justify-between text-gold">
+                <Sparkle className="mb-6" />
+                <Sunburst className="h-9 w-28" />
+                <Sparkle className="mb-6" />
+              </div>
             </div>
           </div>
+          <span aria-hidden className="pointer-events-none absolute inset-1.5 rounded-t-[8.2rem] rounded-b-[0.7rem] border border-gold/35" />
         </div>
       </article>
     </Reveal>
