@@ -29,7 +29,7 @@ function Sunburst({ className = "" }: { className?: string }) {
 function EventCard({ c, delay }: { c: CeremonyView; delay: number }) {
   const image = generated(`ceremony-${c.motif}`);
   return (
-    <Reveal delay={delay} className="h-full">
+    <Reveal variant="card" delay={delay} className="h-full">
       <article className="relative mx-auto flex h-full max-w-[17rem] flex-col rounded-t-[9rem] rounded-b-[1.25rem] bg-ivory p-2 text-center shadow-[0_26px_50px_-24px_rgba(0,0,0,0.6)]">
         <div className="relative flex h-full w-full flex-col overflow-hidden rounded-t-[8.5rem] rounded-b-[0.9rem] border-[1.5px] border-gold">
           {image && (

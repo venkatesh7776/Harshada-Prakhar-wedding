@@ -11,6 +11,7 @@ export function Blessings() {
   const { closing, bride, groom, invocation } = wedding;
   const desktop = generated("closing-mandap-desktop");
   const mobile = generated("closing-mandap-mobile");
+  const monogram = generated("hp-monogram");
 
   return (
     <section
@@ -25,6 +26,28 @@ export function Blessings() {
 
       <div className="container-wide relative text-center">
         <Reveal>
+          {monogram && (
+            // eslint-disable-next-line @next/next/no-img-element -- couple monogram
+            <img
+              src={monogram}
+              alt="Harshada & Prakhar monogram"
+              width={472}
+              height={529}
+              className="mx-auto mb-8 h-44 w-auto drop-shadow-[0_8px_20px_rgba(0,0,0,0.3)] sm:h-52"
+            />
+          )}
+          {closing.compliments && (
+            <div className="mb-10">
+              <p className="font-display text-base italic tracking-wide text-gold-muted">!! {closing.compliments.heading} !!</p>
+              <div className="mt-3 space-y-0.5">
+                {closing.compliments.names.map((n) => (
+                  <p key={n} className="font-display text-[1.05rem] leading-relaxed text-ivory/85">
+                    {n}
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
           <p className="font-display text-lg italic tracking-wide text-gold-muted">{invocation}</p>
           <p className="t-lead mx-auto mt-8 max-w-[52ch] text-balance text-[clamp(1.25rem,1.1rem+0.8vw,1.75rem)] text-ivory/90">
             {closing.message.split("\n").map((line) => (

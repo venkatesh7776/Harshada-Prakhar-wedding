@@ -5,8 +5,8 @@ import { useEffect, useRef, type CSSProperties, type ElementType, type ReactNode
 type Props = {
   children: ReactNode;
   as?: ElementType;
-  /** "text" rises and fades; "image" unmasks from an inset clip. */
-  variant?: "text" | "image";
+  /** "text" rises and fades; "image" unmasks from an inset clip; "card" is a longer, gentler rise+settle. */
+  variant?: "text" | "image" | "card";
   delay?: number;
   className?: string;
   style?: CSSProperties;
@@ -35,7 +35,7 @@ export function Reveal({ children, as: Tag = "div", variant = "text", delay = 0,
   return (
     <Tag
       ref={ref}
-      className={`${variant === "image" ? "reveal-image" : "reveal"} ${className}`}
+      className={`${variant === "image" ? "reveal-image" : variant === "card" ? "reveal-card" : "reveal"} ${className}`}
       style={{ ...style, "--delay": `${delay}ms` } as CSSProperties}
     >
       {children}

@@ -105,6 +105,8 @@ export type WeddingConfig = {
     message: string;
     families?: string;
     blessing?: string;
+    /** "With best compliments" courtesy block shown at the top of the closing section */
+    compliments?: { heading: string; names: string[] };
     contacts: { label: string; phone: string }[];
   };
   music: { src: string; title: string; credit: string };
@@ -126,16 +128,16 @@ export const wedding: WeddingConfig = {
   groom: {
     name: "Prakhar Gupta",
     firstName: "Prakhar",
-    parents: { relation: "Son of", names: ["Shri Vijay", "Smt. Shweta Gupta"] },
+    parents: { relation: "Son of", names: ["Shri. Vijay Gupta", "Smt. Shweta Gupta"] },
   },
 
   coupleHeading: "",
 
   invitation:
-    "Shri Vijay & Smt. Shweta Gupta cordially request the honour of your presence at the wedding celebration of Prakhar and Harshada — 20 January 2027, Dhawan Celebration, Nagpur.",
+    "Shri. Vijay Gupta & Smt. Shweta Gupta cordially request the honour of your presence at the wedding celebration of Prakhar and Harshada — 20 January 2027, Dhawan Celebration, Nagpur.",
 
   invitationCard: {
-    hosts: "Shri Vijay & Smt. Shweta Gupta",
+    hosts: "Shri. Vijay Gupta & Smt. Shweta Gupta",
     request: "Cordially request the honour of your presence at the wedding celebration of our beloved son",
   },
 
@@ -208,6 +210,10 @@ export const wedding: WeddingConfig = {
 
   closing: {
     message: "Your presence and blessings will make our celebration truly special.\nWe can't wait to celebrate with you.",
+    compliments: {
+      heading: "With best compliments",
+      names: ["Shri. Mahesh and Smt. Rajkumari Gupta", "Smt. Laxmi Hindustani", "Gupta Family"],
+    },
     contacts: [],
   },
 
