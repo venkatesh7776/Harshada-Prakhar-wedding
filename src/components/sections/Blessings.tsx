@@ -48,7 +48,7 @@ export function Blessings() {
               </div>
             </div>
           )}
-          <p className="font-display text-lg italic tracking-wide text-gold-muted">{invocation}</p>
+          <p className="font-display text-lg italic tracking-wide text-gold-muted">!! {invocation} !!</p>
           <p className="t-lead mx-auto mt-8 max-w-[52ch] text-balance text-[clamp(1.25rem,1.1rem+0.8vw,1.75rem)] text-ivory/90">
             {closing.message.split("\n").map((line) => (
               <span key={line} className="block">

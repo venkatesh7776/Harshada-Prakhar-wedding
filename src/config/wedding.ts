@@ -122,7 +122,7 @@ export const wedding: WeddingConfig = {
   bride: {
     name: "Harshada Lonkar",
     firstName: "Harshada",
-    parents: { relation: "Daughter of", names: ["Shri. Ashok", "Smt. Vandan Lonkar"] },
+    parents: { relation: "Daughter of", names: ["Shri. Ashok", "Smt. Vandana Lonkar"] },
   },
 
   groom: {
@@ -134,10 +134,10 @@ export const wedding: WeddingConfig = {
   coupleHeading: "",
 
   invitation:
-    "Shri. Vijay Gupta & Smt. Shweta Gupta cordially request the honour of your presence at the wedding celebration of Prakhar and Harshada — 20 January 2027, Dhawan Celebration, Nagpur.",
+    "Shri. Vijay & Smt. Shweta Gupta cordially request the honour of your presence at the wedding celebration of Prakhar and Harshada — 20 January 2027, Dhawan Celebration, Nagpur.",
 
   invitationCard: {
-    hosts: "Shri. Vijay Gupta & Smt. Shweta Gupta",
+    hosts: "Shri. Vijay & Smt. Shweta Gupta",
     request: "Cordially request the honour of your presence at the wedding celebration of our beloved son",
   },
 
@@ -212,15 +212,15 @@ export const wedding: WeddingConfig = {
     message: "Your presence and blessings will make our celebration truly special.\nWe can't wait to celebrate with you.",
     compliments: {
       heading: "With best compliments",
-      names: ["Shri. Mahesh and Smt. Rajkumari Gupta", "Smt. Laxmi Hindustani", "Gupta Family"],
+      names: ["Shri. Mahesh & Smt. Rajkumari Gupta", "Smt. Laxmi Vijay Hindustani", "Km. Praghya Vijay Gupta"],
     },
     contacts: [],
   },
 
   music: {
     /** Path under /public to a licensed track, e.g. "/audio/shehnai.mp3". Empty hides the control. */
-    src: "/audio/wedding-instrumental.mp3",
-    title: "Wedding instrumental",
+    src: "/audio/wedding-song.mp3",
+    title: "Wedding song",
     /** Shown in the footer when set — CC BY tracks must credit the artist and licence */
     credit: "",
   },
