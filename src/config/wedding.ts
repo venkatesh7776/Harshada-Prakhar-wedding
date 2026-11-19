@@ -219,8 +219,8 @@ export const wedding: WeddingConfig = {
 
   music: {
     /** Path under /public to a licensed track, e.g. "/audio/shehnai.mp3". Empty hides the control. */
-    src: "/audio/wedding-song.mp3",
-    title: "Wedding song",
+    src: "/audio/wedding-instrumental.mp3",
+    title: "Wedding instrumental",
     /** Shown in the footer when set — CC BY tracks must credit the artist and licence */
     credit: "",
   },
